@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>特征漂移监控 · Feature Drift Monitor</title>
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body data-theme="light">
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <div>
+      <h1>特征漂移监控</h1>
+      <p class="subtitle">按人群 · 时间 · 业务版本对比分布、缺失率与异常值</p>
+    </div>
+  </div>
+  <div class="topbar-actions">
+    <button id="btn-evaluate" class="btn">运行评估</button>
+    <button id="btn-revision-eval" class="btn btn-ghost" title="仅重新评估受修订影响的脏窗口">受影响窗口重评</button>
+    <button id="btn-theme" class="btn btn-ghost" aria-label="切换主题">◐</button>
+  </div>
+</header>
+
+<main class="layout">
+  <!-- KPI stat tiles -->
+  <section class="kpi-row" id="kpi-row" aria-label="关键指标"></section>
+
+  <!-- filter row -->
+  <section class="panel filters" aria-label="筛选条件">
+    <label>特征
+      <select id="f-feature"></select>
+    </label>
+    <label>人群
+      <select id="f-segment"></select>
+    </label>
+    <label>业务版本
+      <select id="f-version"></select>
+    </label>
+    <label>时间窗口
+      <select id="f-window"></select>
+    </label>
+    <label>告警状态
+      <select id="f-status">
+        <option value="">全部</option>
+        <option value="open">open</option>
+        <option value="acknowledged">acknowledged</option>
+        <option value="resolved">resolved</option>
+        <option value="suppressed">suppressed</option>
+      </select>
+    </label>
+    <span id="empty-badge" class="empty-badge" hidden>该分群在当前窗口为空</span>
+  </section>
+
+  <div class="grid-two">
+    <!-- distribution comparison -->
+    <section class="panel" id="panel-distribution">
+      <div class="panel-head">
+        <h2>分布对比 <small id="dist-context"></small></h2>
+        <div class="legend" id="dist-legend"></div>
+      </div>
+      <div id="dist-chart" class="chart" role="img" aria-label="基线与当前窗口分布对比图"></div>
+      <div class="metric-chips" id="dist-metrics"></div>
+      <details class="table-view">
+        <summary>表格视图（无障碍数据）</summary>
+        <table id="dist-table"></table>
+      </details>
+    </section>
+
+    <!-- baselines + runs -->
+    <section class="panel" id="panel-baselines">
+      <div class="panel-head">
+        <h2>基线版本与回溯</h2>
+        <div class="head-actions">
+          <button id="btn-new-baseline" class="btn btn-small">用当前窗口区间生成新版本</button>
+          <button id="btn-backfill" class="btn btn-small btn-ghost">对历史窗口回溯</button>
+        </div>
+      </div>
+      <div class="scroll-area">
+        <table id="baseline-table"></table>
+      </div>
+      <h3 class="section-sub">评估与修订审计</h3>
+      <div class="scroll-area short">
+        <table id="run-table"></table>
+      </div>
+    </section>
+  </div>
+
+  <!-- alert lifecycle -->
+  <section class="panel" id="panel-alerts">
+    <div class="panel-head">
+      <h2>告警生命周期</h2>
+      <span class="hint" id="alert-count"></span>
+    </div>
+    <div class="scroll-area">
+      <table id="alert-table"></table>
+    </div>
+  </section>
+</main>
+
+<!-- alert detail drawer -->
+<dialog id="alert-dialog">
+  <article>
+    <div class="dialog-head">
+      <h3 id="dlg-title">告警详情</h3>
+      <button id="dlg-close" class="btn btn-ghost btn-small">关闭</button>
+    </div>
+    <div id="dlg-body"></div>
+  </article>
+</dialog>
+
+<div id="toast" class="toast" hidden></div>
+<script src="/app.js"></script>
+</body>
+</html>

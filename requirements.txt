@@ -1,0 +1,4 @@
+# Runtime: Python 3.11 standard library only — no third-party dependencies.
+# pytest is optional; the suite runs under the stdlib unittest runner:
+#   python -m unittest discover -s tests
+pytest>=8.0 ; extra == "test"
